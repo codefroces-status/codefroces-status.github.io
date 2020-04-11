@@ -65,3 +65,31 @@ html, body {
 	justify-content: space-between;
 	align-items: baseline;
 }
+
+.days {
+	display: flex;
+	height: 40px;
+	justify-content: space-between;
+}
+
+.day-bar {
+	border: 0.5px solid #aaa;
+	width: 100%;
+	margin: 2px;
+}
+
+.color-success {
+	background: #6ab482;
+}
+
+.color-warning {
+	background: #f0be4e;
+}
+
+.color-danger {
+	background: #9D3B2F;
+}
+
+.color-nothing {
+	background: #dddddd;
+}

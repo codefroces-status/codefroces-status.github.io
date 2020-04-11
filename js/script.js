@@ -1,20 +1,32 @@
 const dataUrl = 'data.json';
 
+const daysToShow = 90;
 const minutesPerDay = 24 * 60;
+const msPerDay = minutesPerDay * 60 * 1000;
 const COLORS = {
 	success: '#6ab482',
 	warning: '#f0be4e',
 	danger:  '#9D3B2F'
 };
 
+function dateonly(date) {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
 function addStatusRow(data) {
 	const row = document.getElementById('status-row-template').content.cloneNode(true);
 	const dayTemplate = document.getElementById('day-status-template');
 
 	const rowDays = row.querySelector('.days');
-	for(const dayData of data) {
-		const downtime = dayData.downtime;
-		const color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
+	let curDate = dateonly(new Date()) - daysToShow * msPerDay;
+	let start;
+	for (start = 0; start < data.length && data[start] < curDate; start++);
+	for (let i = 0; i < daysToShow; i++) {
+		let color = 'nothing';
+		if (start < data.length && data[start] === curDate) {
+			const downtime = dayData.downtime;
+			color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
+		}
 		const day = dayTemplate.content.cloneNode(true);
 		day.querySelector('.day-bar').classList.add(`color-${color}`);
 		rowDays.appendChild(day);
@@ -34,6 +46,12 @@ async function retrieveData() {
 				throw new Error(`Cannot load data: error ${resp.status}`);
 			}
 			return resp.json();
+		})
+		.then(data => {
+			data.records.forEach((d, ind, arr) => {
+				arr[ind].time = dateonly(new Date(d.time));
+			});
+			return data;
 		});
 }
 
