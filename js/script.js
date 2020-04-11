@@ -21,14 +21,20 @@ function addStatusRow(data) {
 	let curDate = dateonly(new Date()) - daysToShow * msPerDay;
 	let start;
 	for (start = 0; start < data.length && data[start] < curDate; start++);
-	for (let i = 0; i < daysToShow; i++) {
+	for (let i = 0; i < daysToShow; i++, curDate += msPerDay) {
 		let color = 'nothing';
+		let text = new Date(curDate).toDateString() + '<br>';
 		if (start < data.length && data[start] === curDate) {
 			const downtime = dayData.downtime;
 			color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
+			text += `Downtime: ${downtime} minutes`;
+			start++;
+		} else {
+			text += 'No data';
 		}
 		const day = dayTemplate.content.cloneNode(true);
 		day.querySelector('.day-bar').classList.add(`color-${color}`);
+		day.querySelector('.tooltiptext').textContent = text;
 		rowDays.appendChild(day);
 	}
 	document.querySelector('.container').appendChild(row);

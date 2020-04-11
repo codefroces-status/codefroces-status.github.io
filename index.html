@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>CodeFroces Status</title>
+        <title>CodeFroces Status</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
-	</head>
-	<body>
+        <link rel="stylesheet" type="text/css" href="css/tooltips.css">
+    </head>
+    <body>
         <template id='day-status-template'>
-            <div class='day-bar'></div>
+            <div class='day-bar tooltip'>
+                <span class='tooltiptext'></span>
+            </div>
         </template>
         <template id='status-row-template'>
             <div class='days'>
@@ -16,8 +19,8 @@
         </template>
 
         <div class='navbar'>
-			<a href="https://www.codeforces.com"><img src="/images/logo.png" alt="codefroces logo"></a>
-		</div>
+            <a href="https://www.codeforces.com"><img src="/images/logo.png" alt="codefroces logo"></a>
+        </div>
 
         <div class="hero">
             <div class="actual-status">
@@ -25,8 +28,8 @@
             </div>
         </div>
 
-		<div class='container'>
-			<div class="current-status">
+        <div class='container'>
+            <div class="current-status">
                 <div class="current-status-title">
                     <h2>Current Status</h2>
                     <p>Uptime over the past 90 days.<a href="#">View historical uptime.</a></p>
@@ -35,7 +38,7 @@
                     <!--insert here template instances-->
                 </div>
             </div>
-		</div>
-		<script src='js/script.js'></script>
-	</body>
+        </div>
+        <script src='js/script.js'></script>
+    </body>
 </html>
