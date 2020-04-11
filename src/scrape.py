@@ -1,0 +1,90 @@
+import json
+import sys
+import requests
+import shutil
+from datetime import datetime;
+
+CODEFORCES_URL = "https://codeforces.com"
+AGGREGATE = "aggregate.json"
+DETAILS = "details.json"
+AGG_SAMPLE = "aggregate-sample.json"
+DET_SAMPLE = "details-sample.json"
+
+# Initializes log with default values 
+
+if len(sys.argv) > 1 and sys.argv[1] == "r":
+	shutil.copy(AGG_SAMPLE, AGGREGATE)
+	shutil.copy(DET_SAMPLE, DETAILS)
+	sys.exit(0)
+
+# ---------------------------------------------------------------
+def load_file(filename):
+	with open(filename, "r") as f:
+		return json.load(f)
+
+def get_current_status():
+	return requests.get(CODEFORCES_URL).status_code
+
+def save_json(filename, log):
+	with open(filename, "w") as j_file:
+		json.dump(log, j_file)
+
+def secs_from_midnight(time):
+	return time.hour * 3600 + time.minute * 60 + time.second
+
+def last_date(log):
+	if len(log) > 0:
+		return log[-1]["date"];
+	else:
+		return "0000-00-00";
+
+def get_time_repr(time):
+	return time.date().isoformat()
+
+def calc_aggregate(records):
+	res = {"downtime": 0, "uptime": 0}
+	last = 0
+	for record in records:
+		if(record["status"] >= 200 and record["status"] < 300):
+			res["uptime"] += (record["time"] - last)
+		else:
+			res["downtime"] += (record["time"] - last)
+		last = record["time"]
+
+	# Convert to min
+	for key in res.keys():
+		res[key] = int((res[key] + 59) // 60)
+
+	res["date"] = last_date(records)
+	return res
+
+# ----------------------------------------------------------
+
+
+aggregate = load_file(AGGREGATE)
+details = load_file(DETAILS)
+time = datetime.today()
+status = get_current_status()
+
+# Set current status
+aggregate["status"] = status;
+
+# Remove partial info about today if present
+if len(aggregate["records"]) > 0:
+	aggregate["records"].pop()
+
+# Compress last day
+if get_time_repr(time) != last_date(details["today"]):
+	if len(details["today"]):
+		aggregate["records"].append(calc_aggregate(details["today"]))
+	# Clear today history
+	details["today"].clear()
+
+secs = secs_from_midnight(time)
+details["today"].append({"date": get_time_repr(time), "time": secs, "status": status})
+aggregate["records"].append(calc_aggregate(details["today"]))
+
+
+save_json(AGGREGATE, aggregate)
+save_json(DETAILS, details)
+
