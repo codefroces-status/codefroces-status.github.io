@@ -1,6 +1,18 @@
-:root {
-	--div-color: #f6f8fa;
+@media (max-width: 1280px) {
+	:root {
+		--div-color: #f6f8fa;
+		--div-size: min(980px, 80vw);
+	}
 }
+
+@media (min-width: 1280px){
+	:root {
+		--div-color: #f6f8fa;
+		--div-size: min(980px, 60vw);
+	}
+}
+
+
 
 
 html {
@@ -44,7 +56,7 @@ html, body {
 
 .hero > .actual-status {
 	color:white;
-	width:75vw;
+	width: var(--div-size);
 	text-align: center;
 	padding:1em;
 	border-radius: 5px;
@@ -61,7 +73,7 @@ html, body {
 .container {
 	font-size: 15px;
 	margin: 10px auto;
-	width: 75vw;
+	width: var(--div-size);
 	padding:1em;
 	background-color: white;
 	border-radius: 4px;
@@ -92,7 +104,7 @@ html, body {
 
 .current-status-title{
 	display: flex;
-	width: 75vw;
+	width: var(--div-size);
 	text-align: center;
 	justify-content: space-between;
 	align-items: baseline;
