@@ -55,6 +55,7 @@ html, body {
 	margin:0;
 	padding:0;
 	font-weight: bold;	
+	border-width: 1px;
 }
 
 .container {
@@ -89,7 +90,6 @@ html, body {
 	text-align: center;
 	justify-content: space-between;
 	align-items: baseline;
-	border-bottom: 1px solid lightgray;
 }
 
 .days {
@@ -106,19 +106,23 @@ html, body {
 }
 
 .color-success {
-	background: #6ab482;
+	background: #27ae60;
+	border-color: #158243;
 }
 
 .color-warning {
-	background: #f0be4e;
+	background: #f39c12;
+	border-color: #d3860d;
 }
 
 .color-danger {
-	background: #9D3B2F;
+	background: #e74c3c;
+	border-color: #bb3f32;
 }
 
 .color-nothing {
 	background: #dddddd;
+	border-color: #dddddd;
 }
 
 .tooltiptext .day-title {
