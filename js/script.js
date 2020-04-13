@@ -80,8 +80,10 @@ async function init() {
 	return retrieveData()
 		.then(data => {
 			setCurrentStatus(data.status);
+			document.querySelector('.systems-status').innerHTML = '';
 			addStatusRow(data.records, 'homepage');
 		});
 }
 
 init();
+setInterval(init, 60*1000);
