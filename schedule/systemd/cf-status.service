@@ -1,0 +1,9 @@
+[Unit]
+Description=Run cf scraper
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python %h/src/scrape.py %h
+
+[Install]
+WantedBy=multi-user.target
