@@ -1,4 +1,4 @@
-const dataUrl = 'data.json';
+const dataUrl = 'https://cauldron.liquoricemage.it/codefrocesstatus/status-data.json';
 
 const daysToShow = 90;
 const minutesPerDay = 24 * 60;
@@ -20,22 +20,24 @@ function dateonly(date) {
 }
 
 function addStatusRow(data) {
-	console.log(data);
 	const row = document.getElementById('status-row-template').content.cloneNode(true);
 	const dayTemplate = document.getElementById('day-status-template');
 
 	const rowDays = row.querySelector('.days');
 	let curDate = new Date(dateonly(new Date()) - (daysToShow-1) * msPerDay);
 	let start;
-	for (start = 0; start < data.length && data[start].time < curDate; start++);
+	for (start = 0; start < data.length && data[start].date < curDate; start++);
 	for (let i = 0; i < daysToShow; i++, curDate = new Date(curDate.getTime() + msPerDay)) {
 		let color = 'nothing';
 		let text;
-		if (start < data.length && data[start].time.getTime() == curDate.getTime()) {
-			console.log(data[start].time, curDate);
+		if (start < data.length && data[start].date.getTime() == curDate.getTime()) {
 			const downtime = data[start].downtime;
 			color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
-			text = `Downtime: <b>${minutesToTime(downtime)}</b>`;
+			if (downtime == 0) {
+				text = 'Always operational';
+			} else {
+				text = `Downtime: <b>${minutesToTime(downtime)}</b>`;
+			}
 			start++;
 		} else {
 			text = 'No data';
@@ -65,7 +67,7 @@ async function retrieveData() {
 		})
 		.then(data => {
 			data.records.forEach((d, ind, arr) => {
-				arr[ind].time = dateonly(new Date(d.time));
+				arr[ind].date = dateonly(new Date(d.date));
 			});
 			return data;
 		});
