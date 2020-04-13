@@ -9,35 +9,45 @@ const COLORS = {
 	danger:  '#9D3B2F'
 };
 
+function minutesToTime(minutes) {
+	const hours = ('0' + Math.floor(minutes / 60)).slice(-2);
+	minutes = ('0' + (minutes % 60)).slice(-2);
+	return `${hours}:${minutes}`;
+}
+
 function dateonly(date) {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 function addStatusRow(data) {
+	console.log(data);
 	const row = document.getElementById('status-row-template').content.cloneNode(true);
 	const dayTemplate = document.getElementById('day-status-template');
 
 	const rowDays = row.querySelector('.days');
-	let curDate = dateonly(new Date()) - daysToShow * msPerDay;
+	let curDate = new Date(dateonly(new Date()) - (daysToShow-1) * msPerDay);
 	let start;
-	for (start = 0; start < data.length && data[start] < curDate; start++);
-	for (let i = 0; i < daysToShow; i++, curDate += msPerDay) {
+	for (start = 0; start < data.length && data[start].time < curDate; start++);
+	for (let i = 0; i < daysToShow; i++, curDate = new Date(curDate.getTime() + msPerDay)) {
 		let color = 'nothing';
-		let text = new Date(curDate).toDateString() + '<br>';
-		if (start < data.length && data[start] === curDate) {
-			const downtime = dayData.downtime;
+		let text;
+		if (start < data.length && data[start].time.getTime() == curDate.getTime()) {
+			console.log(data[start].time, curDate);
+			const downtime = data[start].downtime;
 			color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
-			text += `Downtime: ${downtime} minutes`;
+			text = `Downtime: <b>${minutesToTime(downtime)}</b>`;
 			start++;
 		} else {
-			text += 'No data';
+			text = 'No data';
 		}
 		const day = dayTemplate.content.cloneNode(true);
 		day.querySelector('.day-bar').classList.add(`color-${color}`);
-		day.querySelector('.tooltiptext').textContent = text;
+		const tooltiptext = day.querySelector('.tooltiptext');
+		tooltiptext.querySelector('.day-title').innerHTML = curDate.toDateString();
+		tooltiptext.querySelector('.data-text').innerHTML = text;
 		rowDays.appendChild(day);
 	}
-	document.querySelector('.container').appendChild(row);
+	document.querySelector('.systems-status').appendChild(row);
 }
 
 function setCurrentStatus(stat) {
