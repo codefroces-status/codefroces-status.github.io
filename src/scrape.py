@@ -62,11 +62,10 @@ def calc_aggregate(records):
 	# Convert to min
 	for key in res.keys():
 		res[key] = int((res[key] + 59) // 60)
-
-        return {
-                "date": last_date(records),
-                "homepage": res
-               }
+	return {
+			"date": last_date(records),
+			"homepage": res
+			}
 
 # ----------------------------------------------------------
 
