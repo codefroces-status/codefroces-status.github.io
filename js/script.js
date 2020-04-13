@@ -47,7 +47,7 @@ function addStatusRow(data) {
 		tooltiptext.querySelector('.data-text').innerHTML = text;
 		rowDays.appendChild(day);
 	}
-	document.querySelector('.container').appendChild(row);
+	document.querySelector('.systems-status').appendChild(row);
 }
 
 function setCurrentStatus(stat) {
