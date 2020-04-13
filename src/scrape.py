@@ -10,11 +10,19 @@ DETAILS = "details.json"
 AGG_SAMPLE = "aggregate-sample.json"
 DET_SAMPLE = "details-sample.json"
 
-# Initializes log with default values 
+def join_path(path, file):
+	return "/".join((path, file))
 
-if len(sys.argv) > 1 and sys.argv[1] == "r":
-	shutil.copy(AGG_SAMPLE, AGGREGATE)
-	shutil.copy(DET_SAMPLE, DETAILS)
+# Initializes log with default values 
+if len(sys.argv) < 2:
+	print("Usage: scrape.py WORKDIR")
+	sys.exit(0)
+
+WORKDIR = sys.argv[1]
+
+if len(sys.argv) > 2 and sys.argv[2] == "r":
+	shutil.copy(AGG_SAMPLE, join_path(WORKDIR, AGGREGATE))
+	shutil.copy(DET_SAMPLE, join_path(WORKDIR, DETAILS))
 	sys.exit(0)
 
 # ---------------------------------------------------------------
@@ -61,8 +69,8 @@ def calc_aggregate(records):
 # ----------------------------------------------------------
 
 
-aggregate = load_file(AGGREGATE)
-details = load_file(DETAILS)
+aggregate = load_file(join_path(WORKDIR, AGGREGATE))
+details = load_file(join_path(WORKDIR, DETAILS))
 time = datetime.today()
 status = get_current_status()
 
@@ -85,6 +93,6 @@ details["today"].append({"date": get_time_repr(time), "time": secs, "status": st
 aggregate["records"].append(calc_aggregate(details["today"]))
 
 
-save_json(AGGREGATE, aggregate)
-save_json(DETAILS, details)
+save_json(join_path(WORKDIR, AGGREGATE), aggregate)
+save_json(join_path(WORKDIR, DETAILS), details)
 
