@@ -63,8 +63,10 @@ def calc_aggregate(records):
 	for key in res.keys():
 		res[key] = int((res[key] + 59) // 60)
 
-	res["date"] = last_date(records)
-	return res
+        return {
+                "date": last_date(records),
+                "homepage": res
+               }
 
 # ----------------------------------------------------------
 
