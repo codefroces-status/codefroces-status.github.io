@@ -14,7 +14,7 @@ function dateonly(date) {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-function addStatusRow(data) {
+function addStatusRow(data, measureType) {
 	const row = document.getElementById('status-row-template').content.cloneNode(true);
 	const dayTemplate = document.getElementById('day-status-template');
 
@@ -26,7 +26,7 @@ function addStatusRow(data) {
 		let color = 'nothing';
 		let text;
 		if (start < data.length && data[start].date.getTime() == curDate.getTime()) {
-			const downtime = data[start].downtime;
+			const downtime = data[start][measureType].downtime;
 			color = downtime == 0 ? 'success' : downtime <= 30 ? 'warning' : 'danger';
 			if (downtime == 0) {
 				text = 'Always operational';
@@ -80,7 +80,7 @@ async function init() {
 	return retrieveData()
 		.then(data => {
 			setCurrentStatus(data.status);
-			addStatusRow(data.records);
+			addStatusRow(data.records, 'homepage');
 		});
 }
 
