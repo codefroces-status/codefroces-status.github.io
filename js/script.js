@@ -14,14 +14,21 @@ function dateonly(date) {
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+// Finds the first day to display
+function findFirstDay(data) {
+	let curDate = new Date(dateonly(new Date()) - (daysToShow-1) * msPerDay);
+	let start;
+	for (start = 0; start < data.length && data[start].date < curDate; start++);
+	return start;
+}
+
 function addStatusRow(data, measureType) {
 	const row = document.getElementById('status-row-template').content.cloneNode(true);
 	const dayTemplate = document.getElementById('day-status-template');
 
 	const rowDays = row.querySelector('.days');
 	let curDate = new Date(dateonly(new Date()) - (daysToShow-1) * msPerDay);
-	let start;
-	for (start = 0; start < data.length && data[start].date < curDate; start++);
+	let start = findFirstDay(data);
 	for (let i = 0; i < daysToShow; i++, curDate = new Date(curDate.getTime() + msPerDay)) {
 		let color = 'nothing';
 		let text;
@@ -76,12 +83,23 @@ async function retrieveData() {
 		});
 }
 
+async function setTotalUptime(data, measureType) {
+	let totalUptime = 0, totalTime = 0;
+	for (let i = findFirstDay(data); i < data.length; i++) {
+		totalUptime += data[i][measureType].uptime;
+		totalTime += data[i][measureType].uptime;
+		totalTime += data[i][measureType].downtime;
+	}
+	document.querySelector('.container-data').textContent = (Math.floor(totalUptime / totalTime * 10000) / 100) + '%';
+}
+
 async function init() {
 	return retrieveData()
 		.then(data => {
 			setCurrentStatus(data.status);
 			document.querySelector('.systems-status').innerHTML = '';
 			addStatusRow(data.records, 'homepage');
+			setTotalUptime(data.records, 'homepage');
 		});
 }
 
