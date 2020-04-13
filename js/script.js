@@ -3,11 +3,6 @@ const dataUrl = 'https://cauldron.liquoricemage.it/codefrocesstatus/status-data.
 const daysToShow = 90;
 const minutesPerDay = 24 * 60;
 const msPerDay = minutesPerDay * 60 * 1000;
-const COLORS = {
-	success: '#6ab482',
-	warning: '#f0be4e',
-	danger:  '#9D3B2F'
-};
 
 function minutesToTime(minutes) {
 	const hours = ('0' + Math.floor(minutes / 60)).slice(-2);
@@ -53,8 +48,16 @@ function addStatusRow(data) {
 }
 
 function setCurrentStatus(stat) {
-	const color = stat < 300 ? COLORS.success : COLORS.danger;
-	document.querySelectorAll('.current-status-color').forEach(node => node.style.background = color);
+	const isOk = stat < 300;
+	const color = isOk ? 'success' : 'danger';
+	document.querySelectorAll('.actual-status-color').forEach(node => node.classList.add('color-'+color));
+	let text;
+	if (isOk) {
+		text = 'All working good!';
+	} else {
+		text = `Something wrong... Http code ${stat}`;
+	}
+	document.querySelector('.actual-status').textContent = text;
 }
 
 async function retrieveData() {
